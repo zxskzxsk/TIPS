@@ -25,7 +25,7 @@ TIPS was written to process tassels photographed in front of a white background.
 TIPS should work with images of any format accepted by MATLAB's `imread` function, but .jpg is recommended. The background image helps isolate the tassel faithfully.  Depending on the amount of noise in your imaging setup, you may be able to get away with using the same background image with all foreground images.
 
 ### Outputs
-TIPS returns two files, named using the path and prefix specified in the '`out`' input argument.  For a path and prefix of *./myTasselImages/tassel1* TIPS will return:
+TIPS returns two files, named using the path and prefix specified in the `'out'`' input argument.  For a path and prefix of *./myTasselImages/tassel1* TIPS will return:
 
 * Processed Image: *./myTasselImages/tassel1_processed.png* is a binary image with some traits illustrated in color:
   + Tassel base denoted by a magenta square
