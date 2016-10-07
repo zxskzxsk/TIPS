@@ -50,7 +50,8 @@ TIPS returns two files, named using the path and prefix specified in the `'out'`
   
 ### Processing more than one image
 There are a lot of ways to get this job done, but if your foreground and background images have the same base to their filename and you want to run all analysis on one computer, you can try something like this:
-```
+
+>```
 ls *_foreground.jpg > toProcess.txt  
 sed -i 's/_.*//' toProcess.txt  
 while read IMG; do  
