@@ -56,8 +56,11 @@ TIPS returns two files, named using the path and prefix specified in the `'out'`
 There are a lot of ways to get this job done, but if your foreground and background images have the same base to their filename and you want to run all analysis on one computer, you can try something like this:
 
 >```
+## Get a list of all foreground images  
 ls *_foreground.jpg > toProcess.txt  
+## Remove '_foreground.jpg', just leaving the base file name  
 sed -i 's/_.*//' toProcess.txt  
+## Iterate through running TIPS on each image
 while read IMG; do  
   matlab -nodesktop -nosplash -r \
   "TIPS('${IMG}_foreground.jpg', '${IMG}_background.jpg', './testOut/${IMG}'); quit()"  
