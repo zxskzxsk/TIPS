@@ -5,12 +5,16 @@ Welcome to the *Tassel Image-based Phenotyping System*, aka *Tassel Image Proces
 ## Downloading and testing TIPS
 
 I recommend you use `git` to obtain the latest version of this software.  You can clone the repository to your computer with `git` by entering the following in the command line:
-> `git clone https://github.com/joeshmoe5409/TIPS.git`
+>```
+`git clone https://github.com/joeshmoe5409/TIPS.git`
+```
 
 You will also need to have MATLAB on your computer.
 
 To verify that you have all the components, run TIPS on the test images included with the software:
-> `matlab -nodesktop -nosplash -r "TIPS('testImg_foreground.jpg', 'testImg_background.jpg', './testOut/testImg'); quit()"`
+>```
+`matlab -nodesktop -nosplash -r "TIPS('testImg_foreground.jpg', 'testImg_background.jpg', './testOut/testImg'); quit()"`
+```
 
 If TIPS runs successfully, you should now have a folder in your working directory called 'testOut' containing two files: 'testImg_processed.png' and 'testImg_out.txt'.
 
@@ -55,6 +59,7 @@ There are a lot of ways to get this job done, but if your foreground and backgro
 ls *_foreground.jpg > toProcess.txt  
 sed -i 's/_.*//' toProcess.txt  
 while read IMG; do  
-  matlab -nodesktop -nosplash -r "TIPS('${IMG}_foreground.jpg', '${IMG}_background.jpg', './testOut/${IMG}'); quit()"  
+  matlab -nodesktop -nosplash -r \
+  "TIPS('${IMG}_foreground.jpg', '${IMG}_background.jpg', './testOut/${IMG}'); quit()"  
 done <toProcess.txt
 ```
