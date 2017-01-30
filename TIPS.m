@@ -1,4 +1,4 @@
-function [] = TIPS( foreground, background, out )
+function [] = TIPS( foreground, background, out, params )
 %TIPS Automated phenotype extraction from tassel images
 %   foreground: string. Path to foreground image
 %   background: string. Path to background image
@@ -12,6 +12,12 @@ dirToMake = regexp(out, '(.*)/.*', 'tokens');
 dirToMake = char(dirToMake{:});
 mkdir(dirToMake);
 
+% If not passed in on the command line, initialize parameter values:
+% params = [gThresh padSize 
+if ~exist('params', 'var')
+   params = [ 0.08, 200, 55, 15, 10e-8, 75, 301, .2 ];
+end
+P = nameParams(params);
 
 %{
        
@@ -54,7 +60,7 @@ try
     
     % Skip if graythresh of the image is unusually low and throw error
     % Threshold picked with set_graythresh.m
-    if gThresh < 0.08
+    if gThresh < P.gThresh
         msgID = 'cleanBinary:lowThresh';
         msg = 'gThresh is below 0.08. Possible there is no tassel in foreground.';
         exception = MException(msgID, msg);
@@ -74,23 +80,23 @@ try
     
     % Pad image with 0s to ensure indices of downstream analyses don't
     % fall of the edges of the array.
-    tBin = padarray(tBin, [200 200]);
-    tassel = padarray(tassel, [200 200]);
+    tBin = padarray(tBin, [P.padSize P.padSize]);
+    tassel = padarray(tassel, [P.padSize P.padSize]);
     
     % Smooth and re-threshold
     fprintf('Smoothing...\n')
-    tSmooth = smoothTassel(tBin, 55, 15, gThresh);
+    tSmooth = smoothTassel(tBin, P.smoothSigma, P.smoothKernelDim, gThresh);
     % Get convex hull, convex area, and convex image of smoothed tassel
     tSmoothProps = regionprops(tSmooth, 'ConvexHull', 'ConvexArea', 'ConvexImage');
     
     % Get endpoints and splines
     fprintf('Making endpoints, splines, and all that good stuff...\n')
-    [endpoints, branchpoints, splines, ~, spike, skelLength, base] = tasselSkel(tSmooth, 10e-8, 75);
+    [endpoints, branchpoints, splines, ~, spike, skelLength, base] = tasselSkel(tSmooth, P.skelTol, P.skelMinBranch);
     
     % Identify lowest branch by looking at
     % change in thickness of the base of the spike.
     % Fit spline to and calculate length for Tassel Length
-    firstBranch = findSpikeStart( 301, tBin, spike, .2);
+    firstBranch = findSpikeStart( P.spikeWidth, tBin, spike, P.spikeTol);
     if ~isempty(firstBranch);
         firstBranchAdj = find(spike(:,1) == firstBranch, 1, 'last');
         [truncSpline, TLadj] = calcAdjSpikeLength(firstBranchAdj, spike);
