@@ -20,13 +20,25 @@ If TIPS runs successfully, you should now have a folder in your working director
 
 ## Running TIPS on your own images
 ### Inputs
-TIPS was written to process tassels photographed in front of a white background.  The algorithm expects to be passed two images: one with the tassel in it (foreground), and one without the tassel (background), as well as an output path and prefix.  Formally, the arguments required by TIPS are:
+TIPS was written to process tassels photographed in front of a white background.  The algorithm expects to be passed two images: one with the tassel in it (foreground), and one without the tassel (background), as well as an output path and prefix.  An optional final argument containing a vector of parameter values can be provided as well.  Formally, the arguments taken by TIPS are (in order):
 
 * **foreground**: path to the image with the tassel in it. *e.g., './myTasselImages/tassel1_foreground.jpg'*
 * **background**: path to the image without the tassel in it. *e.g., './myTasselImages/tassel1_background.jpg'*
 * **out**: path and prefix for output.  Suffixes will be appended to this input by TIPS. *e.g., './output/tassel1'* will produce *'./output/tassel1_processed.png' and './output/tassel1_out.txt'*
+* **params** (optional): vector of 8 parameters, explained in detail below.
 
 TIPS should work with images of any format accepted by MATLAB's `imread` function, but .jpg is recommended. The background image helps isolate the tassel faithfully.  Depending on the amount of noise in your imaging setup, you may be able to get away with using the same background image with all foreground images.
+
+The optional parameters that can be used to fine-tune TIPS are outlined below, in the order in which they should appear in the vector passed to TIPS.m.  The default values were chosen because they worked well with the set of images used when developing TIPS - your mileage may vary.
+
+1. **gThresh**: [*default 0.08*] TIPS uses the MATLAB's `graythresh` function to binarize the image.  If the threshold that `graythresh` uses to binarize is < **gThresh**, the image will throw an error.  This is in place to help avoid analyzing images with no tassel in the foreground, bad contrast, or reflection.  The default was determined empirically using a set of faulty and acceptable images.
+* **padSize**: [*default 200*] The amount of padding added around the edges of the original and binarized tassel image to prevent certain operations from falling off the edge of the images.
+* **smoothSigma**: [*default 55*] TIPS uses a Gaussian kernel to smooth the binary tassel image.  This is the standard deviation of that kernel.
+* **smoothKernelDim**: [*default 15*] This is used to determine the size of the Gaussian kernel.  The kernel is square with dimension **smoothKernelDim** * 2 + 1.
+* **skelTol**: [*default 10e-8*] Tolerance parameter passed to MATLAB's `csaps` function.
+* **skelMinBranch**: [*default 75*] After the tassel has been skeletonized, any branches with length < **skelMinBranch** will be ignored during spline fitting.
+* **spikeWidth**: [*default 301*] When searching for the lowest branch, TIPS integrates the binary image along the longest spline (corresponding to the tassel spike) within a window of **spikeWidth** centered on the spline.
+* **spikeTol**: [*default 0.2*] The position where the derivative of the integral along the spike spline (see above) becomes > **spikeTol** is identified as the lowest branch point.
 
 ### Outputs
 TIPS returns two files, named using the path and prefix specified in the `'out'` input argument.  For a path and prefix of *./myTasselImages/tassel1* TIPS will return:
