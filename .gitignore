@@ -1,5 +1,6 @@
 *
+!.gitignore
 !TIPS.m
-!./TIPS_functions/*
+!TIPS_functions/*
 !testImg*.jpg
 !README.md
