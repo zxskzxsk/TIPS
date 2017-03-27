@@ -5,14 +5,14 @@ Welcome to the *Tassel Image-based Phenotyping System*, aka *Tassel Image Proces
 ## Downloading and testing TIPS
 
 I recommend you use `git` to obtain the latest version of this software.  You can clone the repository to your computer with `git` by entering the following in the command line:
->```
+```
 git clone https://github.com/joegage/TIPS.git
 ```
 
 You will also need to have MATLAB on your computer.
 
 To verify that you have all the components, run TIPS on the test images included with the software:
->```
+```
 matlab -nodesktop -nosplash -r "TIPS('testImg_foreground.jpg', 'testImg_background.jpg', './testOut/testImg'); quit()"
 ```
 
@@ -68,17 +68,17 @@ TIPS returns two files, named using the path and prefix specified in the `'out'`
 There are a lot of ways to get this job done, but if your foreground and background images have the same base to their filename and you want to run all analysis on one computer, you can try something like this:
 
 Get a list of all foreground images: 
->```
+```
 ls *_foreground.jpg > toProcess.txt   
 ```
 
 Remove '_foreground.jpg', just leaving the base file name:  
->```
+```
 sed -i 's/_.*//' toProcess.txt  
 ```
 
 Iterate through running TIPS on each image:
->```
+```
 while read IMG; do  
   matlab -nodesktop -nosplash -r \
   "TIPS('${IMG}_foreground.jpg', '${IMG}_background.jpg', './testOut/${IMG}'); quit()"  
